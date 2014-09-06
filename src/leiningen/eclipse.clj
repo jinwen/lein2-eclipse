@@ -7,10 +7,10 @@
         [leiningen.core.classpath :only [get-classpath]])
   (:import [java.io File])
   (:import [java.util.regex Pattern]))
-  
+
 (defmacro with-out-writer
   "Opens a writer on f, binds it to *out*, and evalutes body.
-Anything printed within body will be written to f."
+  Anything printed within body will be written to f."
   [f & body]
   `(with-open [stream# (writer ~f)]
      (binding [*out* stream#]
@@ -41,50 +41,50 @@ Anything printed within body will be written to f."
         noroot  #(trim-leading-str (unix-path %) root)
         [compile-path]
         (map noroot (map project [:compile-path]))
-	[resource-paths source-paths test-paths]
+        [resource-paths source-paths test-paths]
         (map #(map noroot %) (map project [:resource-paths
-				          :source-paths
-				          :test-paths]))
-	full-classpath   (get-classpath project)
-	pruned-classpath (remove #(or (= compile-path %)
-	                              (some #{%} (mapcat project [:resource-paths
-								  :source-paths
-								  :test-paths])))
-				 full-classpath)]
+                                           :source-paths
+                                           :test-paths]))
+        full-classpath   (get-classpath project)
+        pruned-classpath (remove #(or (= compile-path %)
+                                      (some #{%} (mapcat project [:resource-paths
+                                                                  :source-paths
+                                                                  :test-paths])))
+                                 full-classpath)]
     (prxml [:decl!]
-	   [:classpath
-	    (map (fn [c] (when (directory? c) [:classpathentry {:kind "src" :path c}]))
-	      source-paths)
-	    (map (fn [c] [:classpathentry {:kind "lib" :path c}])
-	      pruned-classpath)
-	    (map (fn [c] (when (directory? c) [:classpathentry {:kind "src" :path c}]))
-	      test-paths)
-	    (map (fn [c] (when (directory? c) [:classpathentry {:kind "src" :path c}]))
-	      resource-paths)
-	    [:classpathentry {:kind "con"
-			       :path "org.eclipse.jdt.launching.JRE_CONTAINER"}]
-	    [:classpathentry {:kind "output"
-			       :path compile-path}]
-	    ])))
+           [:classpath
+            (map (fn [c] (when (directory? c) [:classpathentry {:kind "src" :path c}]))
+                 source-paths)
+            (map (fn [c] [:classpathentry {:kind "lib" :path c}])
+                 pruned-classpath)
+            (map (fn [c] (when (directory? c) [:classpathentry {:kind "src" :path c}]))
+                 test-paths)
+            (map (fn [c] (when (directory? c) [:classpathentry {:kind "src" :path c}]))
+                 resource-paths)
+            [:classpathentry {:kind "con"
+                              :path "org.eclipse.jdt.launching.JRE_CONTAINER"}]
+            [:classpathentry {:kind "output"
+                              :path compile-path}]
+            ])))
 
 (defn- create-project
   "Print .project to *out*."
   [project]
   (prxml [:decl!]
-	 [:projectDescription
-	  [:name (:name project)]
-	  [:comment (:description project)]
-	  [:projects]
-	  [:buildSpec
-	   [:buildCommand
-	    [:name "ccw.builder"]
-	    [:arguments]]
-	   [:buildCommand
-	    [:name "org.eclipse.jdt.core.javabuilder"]
-	    [:arguments]]]
-	  [:natures
-	   [:nature "ccw.nature"]
-	   [:nature "org.eclipse.jdt.core.javanature"]]]))
+         [:projectDescription
+          [:name (:name project)]
+          [:comment (:description project)]
+          [:projects]
+          [:buildSpec
+           [:buildCommand
+            [:name "ccw.builder"]
+            [:arguments]]
+           [:buildCommand
+            [:name "org.eclipse.jdt.core.javabuilder"]
+            [:arguments]]]
+          [:natures
+           [:nature "ccw.nature"]
+           [:nature "org.eclipse.jdt.core.javanature"]]]))
 
 (defn eclipse
   "Create Eclipse project descriptor files."
@@ -93,7 +93,7 @@ Anything printed within body will be written to f."
   (binding [*prxml-indent* 2]
     (with-out-writer
       (file (:root project) ".classpath")
-    (create-classpath project))
+      (create-classpath project))
     (println "Created .classpath")
     (with-out-writer
       (file (:root project) ".project")
