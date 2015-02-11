@@ -1,4 +1,4 @@
-(defproject lein2-eclipse "2.0.0-preview1"
+(defproject lein2-eclipse "2.0.0"
   :description "A leiningen plugin to create Eclipse project descriptor files."
   :url "http://netmelody.org/lein2-eclipse/"
   :license {:name "Eclipse Public License"
